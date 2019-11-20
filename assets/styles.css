@@ -1,0 +1,36 @@
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  grid-template-rows: repeat(12, 1fr);
+}
+
+.header {
+  width: 100%;
+  /* padding: 15px; */
+  background-color: #666666;
+  text-align: center;
+}
+
+.pageTitle {
+  padding: 5px;
+  color: #eeeeee;
+  font-size: 24pt;
+}
+
+.nav {
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.selectedCity {
+  border: 1px solid black;
+  grid-column-start: 2;
+}
+
+.forecast {
+  grid-column-start: 2;
+}
