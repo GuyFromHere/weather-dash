@@ -87,7 +87,7 @@ $(document).ready(function() {
     // Verify city is not in the list already
     if (prevCities.indexOf(city) > -1) {
       // prettier-ignore
-      prevCities.splice(prevCities.indexOf(city), (prevCities.length - 1));
+      prevCities.splice(prevCities.indexOf(city), 1);
       prevCities.unshift(city);
     } else {
       // If not, add it
