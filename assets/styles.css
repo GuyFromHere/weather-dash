@@ -2,15 +2,30 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+ul {
+  padding: 0;
+}
+
+li {
+  list-style: none;
+  padding: 10px;
+}
+
+input {
+  padding: 5px;
+  margin-right: 5px;
+}
+
 .container {
   display: grid;
+  margin-top: 5px;
   grid-template-columns: 3fr 9fr;
   grid-template-rows: repeat(12, 1fr);
 }
 
 .header {
   width: 100%;
-  /* padding: 15px; */
+  padding: 5px;
   background-color: #666666;
   text-align: center;
 }
@@ -28,11 +43,17 @@ body {
   grid-row-end: 12;
   padding-left: 10px;
   margin-right: 10px;
-  background-color: #a2aaae;
+  background-color: #eeeeee;
+}
+
+.listCityNav {
+  margin-right: 10px;
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
 }
 
 .selectedCity {
-  border: 1px solid #a2aaae;
+  border: 1px solid #eeeeee;
   border-radius: 5px;
   grid-column-start: 2;
   grid-row-start: 1;
@@ -42,4 +63,8 @@ body {
 
 .forecast {
   grid-column-start: 2;
+}
+
+.fa {
+  color: blue;
 }
