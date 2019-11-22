@@ -126,7 +126,7 @@ $(document).ready(function() {
       "&units=imperial" +
       "&APPID=" +
       apikey;
-    var forecastCityName = $("<h2>");
+    var forecastCityName = $("<h2>").addClass("cityName");
     var weatherIcon = $("<img>");
     var listForecast = $("<ul>");
     var listTemp = $("<li>");
@@ -151,12 +151,16 @@ $(document).ready(function() {
         res.name + " (" + today + ")"); */
       forecastCityName.html(
         /* res.name + " (" + today + ")" + res.weather[0].icon */
-        res.name +
-          " (" +
-          today +
-          ") <img url='http://openweathermap.org/img/wn/" +
+        res.name + " (" + today + ")"
+      );
+      forecastCityName.append(
+        "<img src='http://openweathermap.org/img/wn/" +
           res.weather[0].icon +
-          "@2x.png'>"
+          ".png'>"
+      );
+
+      console.log(
+        "'http://openweathermap.org/img/wn/" + res.weather[0].icon + "@2x.png'"
       );
       // get weather icon
       /*  $(
