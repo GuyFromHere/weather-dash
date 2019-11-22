@@ -1,6 +1,10 @@
 $(document).ready(function() {
   // API key
   const apikey = "f2919aeb80a924ffadb75fdf60e7f195";
+  const iconURL = "http://openweathermap.org/img/wn/";
+  var today = new Date();
+  today =
+    today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
 
   // build page elements
   // Header
@@ -40,20 +44,24 @@ $(document).ready(function() {
   getSearchHistory();
 
   // Event Handlers
-  $(".listCityNav").on("click", function() {
-    console.log("clicked: " + $(this).text());
+  $(".listCity").on("click", "li", function() {
     getCity($(this).text());
   });
 
   $("#citySearch").on("click", function() {
-    var newCity = searchInput.val();
-    getCity(newCity);
+    getCity(
+      $(this)
+        .prev()
+        .val()
+    );
+    searchInput.val("");
   });
 
   $(".searchInput").on("keypress", function(e) {
     if (e.which == 13) {
       var newCity = searchInput.val();
       getCity(newCity);
+      searchInput.val("");
     }
   });
 
@@ -70,7 +78,6 @@ $(document).ready(function() {
   function getSearchHistory() {
     // clear listCity
     listCity.empty();
-
     var prevCities = getPrevCities();
     // loop through prevCities and populate the list
     for (var i = 0; i < prevCities.length; i++) {
@@ -98,7 +105,6 @@ $(document).ready(function() {
         prevCities.unshift(city);
       }
     }
-    console.log(prevCities);
 
     // Save the list back to localStorage
     localStorage.setItem("cities", JSON.stringify(prevCities));
@@ -110,10 +116,18 @@ $(document).ready(function() {
     var req =
       "http://api.openweathermap.org/data/2.5/forecast?q=" +
       city +
+      "&units=imperial" +
       "&APPID=" +
       apikey;
 
+    var currReq =
+      "http://api.openweathermap.org/data/2.5/weather?q=" +
+      city +
+      "&units=imperial" +
+      "&APPID=" +
+      apikey;
     var forecastCityName = $("<h2>");
+    var weatherIcon = $("<img>");
     var listForecast = $("<ul>");
     var listTemp = $("<li>");
     var listHumidity = $("<li>");
@@ -123,16 +137,42 @@ $(document).ready(function() {
     updateSearchHistory(city);
 
     $.ajax({
-      url: req,
+      url: currReq,
       method: "GET"
     }).then(function(res) {
+      console.log(forecast);
+
+      console.log(res);
       // Clear selectedCity pane
       selectedCity.empty();
       // Fill it with content
-      forecastCityName.text(res.city.name);
-      listTemp.text("Temperature: " + res.list[0].main.temp);
-      listHumidity.text("Humidity: " + res.list[0].main.temp);
-      listWindSpd.text("Wind Speed: " + res.list[0].wind.speed);
+
+      /* forecastCityName.text(
+        res.name + " (" + today + ")"); */
+      forecastCityName.html(
+        /* res.name + " (" + today + ")" + res.weather[0].icon */
+        res.name +
+          " (" +
+          today +
+          ") <img url='http://openweathermap.org/img/wn/" +
+          res.weather[0].icon +
+          "@2x.png'>"
+      );
+      // get weather icon
+      /*  $(
+        '<img url="http://openweathermap.org/img/wn/' +
+          res.weather[0].icon +
+          '@2x.png">'
+      ).insertAfter(forecastCityName); */
+
+      listTemp.html("Temperature: " + res.main.temp + "&#8457");
+      listHumidity.text("Humidity: " + res.main.humidity + "%");
+      listWindSpd.text("Wind Speed: " + res.wind.speed);
+
+      /* forecastCityName.text(res.city.name);
+      listTemp.html("Temperature: " + res.list[0].main.temp + "&#8457");
+      listHumidity.text("Humidity: " + res.list[0].main.humidity + "%");
+      listWindSpd.text("Wind Speed: " + res.list[0].wind.speed); */
       listUV.text("UV Index: ");
       // Append elements to make them show
       selectedCity.append(forecastCityName);
