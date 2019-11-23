@@ -4,9 +4,9 @@ $(document).ready(function() {
   const weatherURL = "http://api.openweathermap.org/data/2.5/";
   const iconURL = "http://openweathermap.org/img/wn/";
   const args = "&units=imperial&APPID=";
-  var today = new Date();
-  today =
-    today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
+  const forecastArg = "forecast?q=";
+  const weatherArg = "weather?q=";
+  var today = moment().format("MM/DD/YYYY");
 
   // build page elements
   // Header
@@ -118,9 +118,8 @@ $(document).ready(function() {
   }
 
   function getCity(city) {
-    var req = weatherURL + "forecast?q=" + city + args + apikey;
-    var currReq =
-      weatherURL + "weather?q=" + city + "&units=imperial&APPID=" + apikey;
+    var forecastReq = weatherURL + forecastArg + city + args + apikey;
+    var currentReq = weatherURL + weatherArg + city + args + apikey;
     var forecastCityName = $("<h2>").addClass("cityName");
     var weatherIcon = $("<img>");
     var listForecast = $("<ul>");
@@ -132,7 +131,7 @@ $(document).ready(function() {
     updateSearchHistory(city);
 
     $.ajax({
-      url: currReq,
+      url: currentReq,
       method: "GET"
     }).then(function(res) {
       console.log(res);
@@ -158,7 +157,7 @@ $(document).ready(function() {
     });
 
     $.ajax({
-      url: req,
+      url: forecastReq,
       method: "GET"
     }).then(function(res) {
       console.log(res);
@@ -168,7 +167,12 @@ $(document).ready(function() {
         for (var t = start - 8; t < start; t++) {
           day += res.list[t].main.temp;
         }
-        $("#day" + d).html("Tomorrow: " + Math.floor(day / 8) + "&#8457");
+        var tomorrow = moment()
+          .add(d + 1, "days")
+          .format("l");
+        $("#day" + d).html(
+          "<h4>" + tomorrow + " </h4>Temp: " + Math.floor(day / 8) + "&#8457"
+        );
         start += 8;
       }
     });
