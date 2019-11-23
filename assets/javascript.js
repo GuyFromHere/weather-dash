@@ -176,12 +176,15 @@ $(document).ready(function() {
       method: "GET"
     }).then(function(res) {
       console.log(res);
-      var tom = 0;
-      for (var t = 0; t < 8; t++) {
-        tom += res.list[t].main.temp;
+      var start = 8;
+      for (var d = 0; d < 5; d++) {
+        var day = 0;
+        for (var t = start - 8; t < start; t++) {
+          day += res.list[t].main.temp;
+        }
+        $("#day" + d).html("Tomorrow: " + Math.floor(day / 8) + "&#8457");
+        start += 8;
       }
-      console.log("Avg temp tomorrow: " + tom / 8);
-      $("#day0").html("Tomorrow: " + Math.floor(tom / 8) + "&#8457");
     });
   }
 });
