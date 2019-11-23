@@ -39,6 +39,11 @@ $(document).ready(function() {
   $(".container").append(selectedCity);
   $(".container").append(forecast);
   forecast.append(forecastTitle);
+  /* for (var i = 0; i < 5; i++) {
+    var forecastDay = $("<div>").addClass("forecastDay");
+    forecastDay.attr("id", "day" + i);
+    forecast.append(forecastDay);
+  } */
 
   // Add Content
   getSearchHistory();
@@ -140,46 +145,24 @@ $(document).ready(function() {
       url: currReq,
       method: "GET"
     }).then(function(res) {
-      console.log(forecast);
-
       console.log(res);
       // Clear selectedCity pane
       selectedCity.empty();
       // Fill it with content
-
-      /* forecastCityName.text(
-        res.name + " (" + today + ")"); */
-      forecastCityName.html(
-        /* res.name + " (" + today + ")" + res.weather[0].icon */
-        res.name + " (" + today + ")"
-      );
-      forecastCityName.append(
-        "<img src='http://openweathermap.org/img/wn/" +
-          res.weather[0].icon +
-          ".png'>"
-      );
-
-      console.log(
-        "'http://openweathermap.org/img/wn/" + res.weather[0].icon + "@2x.png'"
-      );
-      // get weather icon
-      /*  $(
-        '<img url="http://openweathermap.org/img/wn/' +
-          res.weather[0].icon +
-          '@2x.png">'
-      ).insertAfter(forecastCityName); */
-
+      forecastCityName.text(res.name + " (" + today + ")");
+      weatherIcon
+        .attr(
+          "src",
+          "http://openweathermap.org/img/wn/" + res.weather[0].icon + ".png"
+        )
+        .attr("alt", res.weather[0].description);
       listTemp.html("Temperature: " + res.main.temp + "&#8457");
       listHumidity.text("Humidity: " + res.main.humidity + "%");
       listWindSpd.text("Wind Speed: " + res.wind.speed);
-
-      /* forecastCityName.text(res.city.name);
-      listTemp.html("Temperature: " + res.list[0].main.temp + "&#8457");
-      listHumidity.text("Humidity: " + res.list[0].main.humidity + "%");
-      listWindSpd.text("Wind Speed: " + res.list[0].wind.speed); */
       listUV.text("UV Index: ");
       // Append elements to make them show
       selectedCity.append(forecastCityName);
+      selectedCity.append(weatherIcon);
       selectedCity.append(listForecast);
       listForecast.append(listTemp);
       listForecast.append(listHumidity);
