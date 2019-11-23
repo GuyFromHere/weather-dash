@@ -1,7 +1,9 @@
 $(document).ready(function() {
   // API key
   const apikey = "f2919aeb80a924ffadb75fdf60e7f195";
+  const weatherURL = "http://api.openweathermap.org/data/2.5/";
   const iconURL = "http://openweathermap.org/img/wn/";
+  const args = "&units=imperial&APPID=";
   var today = new Date();
   today =
     today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear();
@@ -23,7 +25,6 @@ $(document).ready(function() {
   // Selected City
   var selectedCity = $("<div>").addClass("selectedCity");
   // Forecast
-  var forecast = $("<div>").addClass("forecast");
   var forecastTitle = $("<h3>")
     .addClass("forecastTitle")
     .text("5-Day Forecast:");
@@ -37,12 +38,10 @@ $(document).ready(function() {
   searchInput.after(searchIcon);
   searchBar.append(listCity);
   $(".container").append(selectedCity);
-  //$(".container").append(forecast);
-
+  $(".container").append(forecastTitle);
   for (var i = 0; i < 5; i++) {
     var nextForecastDay = $("<div>").addClass("forecastDay");
     nextForecastDay.attr("id", "day" + i);
-    nextForecastDay.text("day" + i);
     $(".container").append(nextForecastDay);
   }
 
@@ -104,8 +103,8 @@ $(document).ready(function() {
       prevCities.unshift(city);
     } else {
       // If not, add it
-      if (prevCities.length === 6) {
-        prevCities.splice(5, 5);
+      if (prevCities.length === 9) {
+        prevCities.splice(8, 8);
         prevCities.unshift(city);
       } else {
         prevCities.unshift(city);
@@ -119,19 +118,9 @@ $(document).ready(function() {
   }
 
   function getCity(city) {
-    var req =
-      "http://api.openweathermap.org/data/2.5/forecast?q=" +
-      city +
-      "&units=imperial" +
-      "&APPID=" +
-      apikey;
-
+    var req = weatherURL + "forecast?q=" + city + args + apikey;
     var currReq =
-      "http://api.openweathermap.org/data/2.5/weather?q=" +
-      city +
-      "&units=imperial" +
-      "&APPID=" +
-      apikey;
+      weatherURL + "weather?q=" + city + "&units=imperial&APPID=" + apikey;
     var forecastCityName = $("<h2>").addClass("cityName");
     var weatherIcon = $("<img>");
     var listForecast = $("<ul>");
@@ -152,10 +141,7 @@ $(document).ready(function() {
       // Fill it with content
       forecastCityName.text(res.name + " (" + today + ")");
       weatherIcon
-        .attr(
-          "src",
-          "http://openweathermap.org/img/wn/" + res.weather[0].icon + ".png"
-        )
+        .attr("src", iconURL + res.weather[0].icon + ".png")
         .attr("alt", res.weather[0].description);
       listTemp.html("Temperature: " + res.main.temp + "&#8457");
       listHumidity.text("Humidity: " + res.main.humidity + "%");
