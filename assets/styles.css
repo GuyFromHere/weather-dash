@@ -19,8 +19,11 @@ input {
 .container {
   display: grid;
   margin-top: 5px;
-  grid-template-columns: 3fr 9fr;
-  grid-template-rows: repeat(12, 1fr);
+  /* align-items: stretch; */
+  grid-template-columns: 3fr repeat(5, 2fr);
+  grid-template-rows: repeat(9, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
 }
 
 .header {
@@ -42,7 +45,6 @@ input {
   grid-row-start: 1;
   grid-row-end: 12;
   padding-left: 10px;
-  margin-right: 10px;
   background-color: #eeeeee;
 }
 
@@ -57,8 +59,9 @@ input {
   border: 1px solid #eeeeee;
   border-radius: 5px;
   grid-column-start: 2;
+  grid-column-end: 12;
   grid-row-start: 1;
-  grid-row-end: 6;
+  grid-row-end: 7;
   padding-left: 5px;
 }
 
@@ -70,15 +73,31 @@ input {
   display: inline;
 }
 
-.forecast {
-  grid-column-start: 2;
+.forecastDay {
+  grid-row: 7 / 12;
+  border: solid 1px #eeeeee;
+  padding: 10px;
 }
 
-.forecastDay {
-  /* position: relative; */
-  width: 100px;
-  height: 200px;
-  border: solid ipx #eeeeee;
+#day0 {
+  /* align-self: stretch; */
+  grid-column: 2 / 3;
+}
+
+#day1 {
+  grid-column: 3 / 4;
+}
+
+#day2 {
+  grid-column: 4 / 5;
+}
+
+#day3 {
+  grid-column: 5 / 6;
+}
+
+#day4 {
+  grid-column: 6 / 7;
 }
 
 .fa {

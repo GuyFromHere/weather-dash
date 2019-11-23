@@ -37,13 +37,14 @@ $(document).ready(function() {
   searchInput.after(searchIcon);
   searchBar.append(listCity);
   $(".container").append(selectedCity);
-  $(".container").append(forecast);
-  forecast.append(forecastTitle);
-  /* for (var i = 0; i < 5; i++) {
-    var forecastDay = $("<div>").addClass("forecastDay");
-    forecastDay.attr("id", "day" + i);
-    forecast.append(forecastDay);
-  } */
+  //$(".container").append(forecast);
+
+  for (var i = 0; i < 5; i++) {
+    var nextForecastDay = $("<div>").addClass("forecastDay");
+    nextForecastDay.attr("id", "day" + i);
+    nextForecastDay.text("day" + i);
+    $(".container").append(nextForecastDay);
+  }
 
   // Add Content
   getSearchHistory();
@@ -168,6 +169,19 @@ $(document).ready(function() {
       listForecast.append(listHumidity);
       listForecast.append(listWindSpd);
       listForecast.append(listUV);
+    });
+
+    $.ajax({
+      url: req,
+      method: "GET"
+    }).then(function(res) {
+      console.log(res);
+      var tom = 0;
+      for (var t = 0; t < 8; t++) {
+        tom += res.list[t].main.temp;
+      }
+      console.log("Avg temp tomorrow: " + tom / 8);
+      $("#day0").html("Tomorrow: " + Math.floor(tom / 8) + "&#8457");
     });
   }
 });
