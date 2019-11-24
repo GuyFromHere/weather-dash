@@ -88,6 +88,10 @@ input {
   color: #ffffff;
 }
 
+.forecastDay h4 {
+  margin-top: 0;
+}
+
 #day0 {
   /* align-self: stretch; */
   grid-column: 2;
