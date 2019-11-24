@@ -4,8 +4,8 @@ $(document).ready(function() {
   //////////////////
   // Requests
   const apikey = "f2919aeb80a924ffadb75fdf60e7f195";
-  const weatherURL = "http://api.openweathermap.org/data/2.5/";
-  const iconURL = "http://openweathermap.org/img/wn/";
+  const weatherURL = "https://api.openweathermap.org/data/2.5/";
+  const iconURL = "https://openweathermap.org/img/wn/";
   const args = "&units=imperial";
   const apiArg = "&APPID=";
   const forecastArg = "forecast?q=";
