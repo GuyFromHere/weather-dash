@@ -1,19 +1,30 @@
 $(document).ready(function() {
-  // API key
+  //////////////////
+  // Variables    //
+  //////////////////
+  // Requests
   const apikey = "f2919aeb80a924ffadb75fdf60e7f195";
   const weatherURL = "http://api.openweathermap.org/data/2.5/";
   const iconURL = "http://openweathermap.org/img/wn/";
-  const args = "&units=imperial&APPID=";
+  const args = "&units=imperial";
+  const apiArg = "&APPID=";
   const forecastArg = "forecast?q=";
   const weatherArg = "weather?q=";
+  const uvArg1 = "uvi?lat=";
+  const uvArg2 = "&lon=";
+
+  // Globals
   var today = moment().format("MM/DD/YYYY");
   var uvIndex;
 
-  // build page elements
+  ////////////////////
+  // HTML elements  //
+  ////////////////////
   // Header
   var title = $("<h1>")
     .addClass("pageTitle")
     .text("Weather Dashboard");
+
   // Nav
   var nav = $("<div>").addClass("nav");
   var searchBar = $("<div>").addClass("searchBar");
@@ -23,14 +34,23 @@ $(document).ready(function() {
     .addClass("fas fa-search")
     .attr("id", "citySearch");
   var listCity = $("<ul>").addClass("listCity");
+
   // Selected City
   var selectedCity = $("<div>").addClass("selectedCity");
+  var forecastCityName = $("<h2>").addClass("cityName");
+  var weatherIcon = $("<img>");
+  var listForecast = $("<ul>");
+  var listTemp = $("<li>");
+  var listHumidity = $("<li>");
+  var listWindSpd = $("<li>");
+  var listUV = $("<li>");
+
   // Forecast
   var forecastTitle = $("<h3>")
     .addClass("forecastTitle")
     .text("5-Day Forecast:");
 
-  // Append elements
+  // Append static elements
   $(".header").append(title);
   $(".container").append(nav);
   nav.append(searchBar);
@@ -46,8 +66,12 @@ $(document).ready(function() {
     $(".container").append(forecastDiv);
   }
 
+  ////////////////
+  // Functions  //
+  ////////////////
+
+  // Get previous cities list from localStorage
   function getPrevCities() {
-    // Get previous cities list from localStorage
     if (localStorage.getItem("cities") == null) {
       return [];
     } else {
@@ -93,43 +117,33 @@ $(document).ready(function() {
     getSearchHistory();
   }
 
+  ////////////
+  // AJAX   //
+  ////////////
+
+  // Gets current weather conditions for the selected city and sends coordinates to UV request
   function getCurrentConditions(currentReq) {
-    var forecastCityName = $("<h2>").addClass("cityName");
-    var weatherIcon = $("<img>");
-    var listForecast = $("<ul>");
-    var listTemp = $("<li>");
-    var listHumidity = $("<li>");
-    var listWindSpd = $("<li>");
-    var listUV = $("<li>");
-
-    $.ajax({
-      url: currentReq,
-      method: "GET"
-    }).then(function(res) {
-      console.log(res);
-      // Clear selectedCity pane
-      selectedCity.empty();
-
-      // get lat and lon for UV req
-      var lat = res.coord.lat;
-      var lon = res.coord.lon;
+    // define variable to store coordinates for uv request
+    var coord;
+    $.when(
+      $.get(currentReq, function(res) {
+        coord = res.coord;
+        // page content
+        forecastCityName.text(res.name + " (" + today + ")");
+        weatherIcon
+          .attr("src", iconURL + res.weather[0].icon + ".png")
+          .attr("alt", res.weather[0].description);
+        listTemp.html("Temperature: " + res.main.temp + "&#8457");
+        listHumidity.text("Humidity: " + res.main.humidity + "%");
+        listWindSpd.text("Wind Speed: " + res.wind.speed);
+      })
+    ).then(function() {
+      // use coord to generate UV index request
       var uvReq =
-        weatherURL + "uvi?lat=" + lat + "&lon=" + lon + "&appid=" + apikey;
-      getUVIndex(
-        weatherURL + "uvi?lat=" + lat + "&lon=" + lon + "&appid=" + apikey
-      );
+        weatherURL + uvArg1 + coord.lat + uvArg2 + coord.lon + apiArg + apikey;
+      getUVIndex(uvReq);
 
-      // Fill it with content
-      forecastCityName.text(res.name + " (" + today + ")");
-      weatherIcon
-        .attr("src", iconURL + res.weather[0].icon + ".png")
-        .attr("alt", res.weather[0].description);
-      listTemp.html("Temperature: " + res.main.temp + "&#8457");
-      listHumidity.text("Humidity: " + res.main.humidity + "%");
-      listWindSpd.text("Wind Speed: " + res.wind.speed);
-      listUV.text("UV Index: " + uvIndex);
-
-      // Append elements to make them show
+      // Add elements to page
       selectedCity.append(forecastCityName);
       selectedCity.append(weatherIcon);
       selectedCity.append(listForecast);
@@ -140,22 +154,27 @@ $(document).ready(function() {
     });
   }
 
-  function getForecast(forecastReq) {
-    $.ajax({
-      url: forecastReq,
-      method: "GET"
-    }).then(function(res) {
-      console.log(res);
+  // Gets UV Index and sets text value for UV index element
+  function getUVIndex(uvReq) {
+    $.get(uvReq, function(res) {
+      uvIndex = res.value;
+      listUV.text("UV Index: " + uvIndex);
+    });
+  }
 
+  // Fills five day forecast for the selected city
+  function getForecast(forecastReq) {
+    $.get(forecastReq).then(function(res) {
       var start = 8;
       // loop through five days
       for (var d = 0; d < 5; d++) {
         var temp = 0;
         var hum = 0;
+        // loop through eight 3 hour increments and average temp / hum
         for (var t = start - 8; t < start; t++) {
           temp += res.list[t].main.temp;
           hum += res.list[t].main.humidity;
-          // get same time every day and grab that icon
+          // get icon from noon each day
           if (t === 1 || t === 9 || t === 17 || t === 25 || t === 33) {
             var iconCode = res.list[t].weather[0].icon;
             var description = res.list[t].weather[0].description;
@@ -188,25 +207,18 @@ $(document).ready(function() {
     });
   }
 
-  function getUVIndex(uvReq) {
-    $.ajax({
-      url: uvReq,
-      method: "GET"
-    }).then(function(res) {
-      uvIndex = res.value;
-    });
-  }
-
+  //
   function getCity(city) {
-    var forecastReq = weatherURL + forecastArg + city + args + apikey;
-    var currentReq = weatherURL + weatherArg + city + args + apikey;
-
+    var forecastReq = weatherURL + forecastArg + city + args + apiArg + apikey;
+    var currentReq = weatherURL + weatherArg + city + args + apiArg + apikey;
     updateSearchHistory(city);
     getCurrentConditions(currentReq);
     getForecast(forecastReq);
   }
 
-  // Event Handlers
+  ////////////////////
+  // Event Handlers //
+  ////////////////////
   $(".listCity").on("click", "li", function() {
     getCity($(this).text());
   });
