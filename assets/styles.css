@@ -122,6 +122,15 @@ input {
   margin-left: 10px;
 }
 
-.fa {
-  color: blue;
+.goodUV {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: #58a3ee;
+}
+
+.badUV {
+  border-radius: 5px;
+  padding: 5px;
+  background-color: crimson;
+  color: #eeeeee;
 }

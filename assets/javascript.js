@@ -44,6 +44,7 @@ $(document).ready(function() {
   var listHumidity = $("<li>");
   var listWindSpd = $("<li>");
   var listUV = $("<li>");
+  var spanUV = $("<span>").addClass("goodUV");
 
   // Forecast
   var forecastTitle = $("<h3>")
@@ -136,6 +137,7 @@ $(document).ready(function() {
         listTemp.html("Temperature: " + res.main.temp + "&#8457");
         listHumidity.text("Humidity: " + res.main.humidity + "%");
         listWindSpd.text("Wind Speed: " + res.wind.speed);
+        listUV.text("UV Index: ");
       })
     ).then(function() {
       // use coord to generate UV index request
@@ -151,6 +153,7 @@ $(document).ready(function() {
       listForecast.append(listHumidity);
       listForecast.append(listWindSpd);
       listForecast.append(listUV);
+      listUV.append(spanUV);
     });
   }
 
@@ -158,7 +161,12 @@ $(document).ready(function() {
   function getUVIndex(uvReq) {
     $.get(uvReq, function(res) {
       uvIndex = res.value;
-      listUV.text("UV Index: " + uvIndex);
+      spanUV.text(uvIndex);
+      if (uvIndex >= 5) {
+        spanUV.addClass("badUV");
+      } else {
+        spanUV.removeClass("badUV");
+      }
     });
   }
 
