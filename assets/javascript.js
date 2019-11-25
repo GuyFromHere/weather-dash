@@ -30,8 +30,9 @@ $(document).ready(function() {
   var searchBar = $("<div>").addClass("searchBar");
   var searchTitle = $("<h3>").text("Search for a City:");
   var searchInput = $("<input>").addClass("searchInput");
+  var searchSpan = $("<span>").addClass("searchSpan");
   var searchIcon = $("<i>")
-    .addClass("fas fa-search")
+    .addClass("fas fa-search fa-sm")
     .attr("id", "citySearch");
   var listCity = $("<ul>").addClass("listCity");
 
@@ -57,7 +58,8 @@ $(document).ready(function() {
   nav.append(searchBar);
   searchBar.append(searchTitle);
   searchBar.append(searchInput);
-  searchInput.after(searchIcon);
+  searchInput.after(searchSpan);
+  searchSpan.append(searchIcon);
   searchBar.append(listCity);
   $(".container").append(selectedCity);
   $(".container").append(forecastTitle);
@@ -95,15 +97,14 @@ $(document).ready(function() {
 
   // Runs when prompted by clicking the Search button
   function updateSearchHistory(city) {
+    // Verify city is not in the list already. If not, add it.
     var prevCities = getPrevCities();
-
-    // Verify city is not in the list already
     if (prevCities.indexOf(city) > -1) {
       // prettier-ignore
       prevCities.splice(prevCities.indexOf(city), 1);
       prevCities.unshift(city);
     } else {
-      // If not, add it
+      // Cap list at 9 cities and sort
       if (prevCities.length === 9) {
         prevCities.splice(8, 8);
         prevCities.unshift(city);
@@ -111,10 +112,8 @@ $(document).ready(function() {
         prevCities.unshift(city);
       }
     }
-
-    // Save the list back to localStorage
+    // Save to localStorage and rebuild the list
     localStorage.setItem("cities", JSON.stringify(prevCities));
-    // Rebuild listNav with altered list
     getSearchHistory();
   }
 
@@ -215,7 +214,7 @@ $(document).ready(function() {
     });
   }
 
-  //
+  // Runs ajax functions to get forecast / current conditions for the selected city
   function getCity(city) {
     var forecastReq = weatherURL + forecastArg + city + args + apiArg + apikey;
     var currentReq = weatherURL + weatherArg + city + args + apiArg + apikey;
@@ -248,6 +247,6 @@ $(document).ready(function() {
     }
   });
 
-  // Add Content from localStorage on page load
+  // Get content from localStorage on page load
   getSearchHistory();
 });

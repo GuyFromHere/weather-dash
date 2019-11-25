@@ -17,6 +17,7 @@ input {
   margin-right: 5px;
   border: 2px solid #eeeeee;
   border-radius: 5px;
+  line-height: 25px;
 }
 
 .container {
@@ -55,6 +56,20 @@ input {
   background-color: #ffffff;
   border: 2px solid #eeeeee;
   cursor: pointer;
+}
+
+.searchSpan {
+  border: 2px solid lightskyblue;
+  border-radius: 5px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-left: -5px;
+  background-color: #58a3ee;
+
+  font-size: 14px;
+  color: #ffffff;
 }
 
 .selectedCity {
@@ -122,15 +137,16 @@ input {
   margin-left: 10px;
 }
 
-.goodUV {
+li span {
   border-radius: 5px;
   padding: 5px;
+  color: #ffffff;
+}
+
+.goodUV {
   background-color: #58a3ee;
 }
 
 .badUV {
-  border-radius: 5px;
-  padding: 5px;
   background-color: crimson;
-  color: #eeeeee;
 }
